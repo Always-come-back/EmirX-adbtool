@@ -1,0 +1,223 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# --------------------------------------
+#            EMİRX-ADBTOOL
+# --------------------------------------
+#          27 Farklı Özellik
+# --------------------------------------
+
+import os
+
+def banner():
+    print("""
+    --------------------------------------
+                ADMIN PANELİ 
+    --------------------------------------
+    [1] Bağlı Cihazları Listele
+    [2] Cihaza Bağlan
+    [3] Tüm Bağlantıları Kes
+    [4] Cihaz Kabuk Erişimi (Shell)
+    [5] APK Kur
+    [6] Cihazı Yeniden Başlat
+    [7] Cihazı Kapat
+    [8] Ekran Görüntüsü Al
+    [9] Ekran Videosu Kaydet
+    [10] Uygulama Sil
+    [11] Dosya Gönder
+    [12] Dosya Çek
+    [13] Cihaz Bilgilerini Gör
+    [14] Uygulama Listesi Al
+    [15] Bellek Kullanımını Kontrol Et
+    [16] Pil Durumunu Görüntüle
+    [17] Sistemi Güncelle
+    [18] Çıkış Yap (Logout)
+    [19] Uygulama Loglarını Gör
+    [20] Sistemi Yeniden Başlat
+    [21] Ekranı Yansıt (Scrcpy)
+    [22] Sesli Komut Gönder
+    [23] Fabrika Ayarlarına Sıfırla
+    [24] USB Hata Ayıklamasını Aç/Kapat
+    [25] Uygulama Durdur
+    [26] Port Yönlendirme Ayarla
+    [27] Cihaz Saatini Senkronize Et
+    """)
+
+# Özellik Fonksiyonları
+def cihazlari_listele():
+    os.system("adb devices -l")
+
+def cihaza_baglan():
+    ip = input("Cihazın IP adresini girin: ")
+    os.system(f"adb connect {ip}:5555")
+
+def baglantilari_kes():
+    os.system("adb disconnect")
+
+def cihaz_kabugu():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} shell")
+
+def apk_kur():
+    cihaz = input("Cihaz kimliğini girin: ")
+    apk_yolu = input("APK dosya yolunu girin: ")
+    os.system(f"adb -s {cihaz} install {apk_yolu}")
+
+def cihaz_yeniden_baslat():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} reboot")
+
+def cihaz_kapat():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} shell reboot -p")
+
+def ekran_goruntusu_al():
+    cihaz = input("Cihaz kimliğini girin: ")
+    hedef = input("Ekran görüntüsü kaydedileceği dosya adı: ")
+    os.system(f"adb -s {cihaz} shell screencap -p /sdcard/{hedef}")
+    os.system(f"adb -s {cihaz} pull /sdcard/{hedef}")
+
+def ekran_videosu_kaydet():
+    cihaz = input("Cihaz kimliğini girin: ")
+    dosya = input("Video kaydı dosya adı: ")
+    os.system(f"adb -s {cihaz} shell screenrecord /sdcard/{dosya}")
+    os.system(f"adb -s {cihaz} pull /sdcard/{dosya}")
+
+def uygulama_sil():
+    cihaz = input("Cihaz kimliğini girin: ")
+    paket_adi = input("Silmek istediğiniz uygulama paketi adı: ")
+    os.system(f"adb -s {cihaz} uninstall {paket_adi}")
+
+def dosya_gonder():
+    cihaz = input("Cihaz kimliğini girin: ")
+    kaynak = input("Gönderilecek dosya yolu: ")
+    hedef = input("Cihazdaki hedef dosya yolu: ")
+    os.system(f"adb -s {cihaz} push {kaynak} {hedef}")
+
+def dosya_cek():
+    cihaz = input("Cihaz kimliğini girin: ")
+    kaynak = input("Cihazdaki kaynak dosya yolu: ")
+    hedef = input("Çekilecek hedef dosya yolu: ")
+    os.system(f"adb -s {cihaz} pull {kaynak} {hedef}")
+
+def cihaz_bilgileri():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} shell getprop")
+
+def uygulama_listesi():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} shell pm list packages")
+
+def bellek_kontrol():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} shell dumpsys meminfo")
+
+def pil_durumu():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} shell dumpsys battery")
+
+def sistem_guncelle():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} shell pm install -r")
+
+def uygulama_loglari():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} logcat")
+
+def ekran_yansit():
+    os.system("scrcpy")
+
+def sesli_komut():
+    cihaz = input("Cihaz kimliğini girin: ")
+    komut = input("Göndermek istediğiniz sesli komut: ")
+    os.system(f"adb -s {cihaz} shell input text '{komut}'")
+
+def fabrika_ayar_sifirla():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} shell recovery --wipe_data")
+
+def usb_hata_ayiklama():
+    cihaz = input("Cihaz kimliğini girin: ")
+    durum = input("USB hata ayıklamasını aç/kapat (enable/disable): ")
+    if durum == "enable":
+        os.system(f"adb -s {cihaz} shell setprop persist.service.adb.enable 1")
+    elif durum == "disable":
+        os.system(f"adb -s {cihaz} shell setprop persist.service.adb.enable 0")
+
+def uygulama_durdur():
+    cihaz = input("Cihaz kimliğini girin: ")
+    paket_adi = input("Durdurmak istediğiniz uygulama paketi adı: ")
+    os.system(f"adb -s {cihaz} shell am force-stop {paket_adi}")
+
+def port_yonlendirme():
+    cihaz = input("Cihaz kimliğini girin: ")
+    port = input("Yönlendirmek istediğiniz port numarası: ")
+    os.system(f"adb -s {cihaz} forward tcp:{port} tcp:{port}")
+
+def saat_senkronize():
+    cihaz = input("Cihaz kimliğini girin: ")
+    os.system(f"adb -s {cihaz} shell date $(date +%m%d%H%M%Y.%S)")
+
+# Ana Menü
+def ana_menu():
+    while True:
+        banner()
+        secim = input("Bir seçenek seçin: ")
+        if secim == "1":
+            cihazlari_listele()
+        elif secim == "2":
+            cihaza_baglan()
+        elif secim == "3":
+            baglantilari_kes()
+        elif secim == "4":
+            cihaz_kabugu()
+        elif secim == "5":
+            apk_kur()
+        elif secim == "6":
+            cihaz_yeniden_baslat()
+        elif secim == "7":
+            cihaz_kapat()
+        elif secim == "8":
+            ekran_goruntusu_al()
+        elif secim == "9":
+            ekran_videosu_kaydet()
+        elif secim == "10":
+            uygulama_sil()
+        elif secim == "11":
+            dosya_gonder()
+        elif secim == "12":
+            dosya_cek()
+        elif secim == "13":
+            cihaz_bilgileri()
+        elif secim == "14":
+            uygulama_listesi()
+        elif secim == "15":
+            bellek_kontrol()
+        elif secim == "16":
+            pil_durumu()
+        elif secim == "17":
+            sistem_guncelle()
+        elif secim == "18":
+            print("Çıkış yapılıyor...")
+            break
+        elif secim == "19":
+            uygulama_loglari()
+        elif secim == "20":
+            ekran_yansit()
+        elif secim == "21":
+            sesli_komut()
+        elif secim == "22":
+            fabrika_ayar_sifirla()
+        elif secim == "23":
+            usb_hata_ayiklama()
+        elif secim == "24":
+            uygulama_durdur()
+        elif secim == "25":
+            port_yonlendirme()
+        elif secim == "26":
+            saat_senkronize()
+        else:
+            print("Geçersiz seçim, lütfen tekrar deneyin.")
+
+if __name__ == "__main__":
+    ana_menu()
